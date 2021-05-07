@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AxClass xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+	<Name>CompanyInfoAux_Extension</Name>
+	<SourceCode>
+		<Declaration><![CDATA[
+/// <summary>
+/// CompanyInfoAux_Extension class.
+/// </summary>
+[ExtensionOf(tableStr(CompanyInfo))]
+final class CompanyInfoAux_Extension
+{
+}
+]]></Declaration>
+		<Methods>
+			<Method>
+				<Name>countryRegionIdAux</Name>
+				<Source><![CDATA[
+    /// <summary>
+    /// Returns country region id
+    /// </summary>
+    /// <returns>SysAddressCountryRegionId</returns>
+    public SysAddressCountryRegionId countryRegionIdAux()
+    {
+        LogisticsPostalAddress address = this.primaryPostalAddressAux();
+
+        return address.CountryRegionId;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>primaryAddressLogisticsLocationAux</Name>
+				<Source><![CDATA[
+    /// <summary>
+    /// getting primaryAddressLogisticsLocation
+    /// </summary>
+    /// <param name = "_forupdate">boolean</param>
+    /// <param name = "_throwExceptions">boolean</param>
+    /// <returns>LogisticsLocation</returns>
+    public LogisticsLocation primaryAddressLogisticsLocationAux(boolean _forupdate = false, boolean _throwExceptions = false)
+    {
+        var res = LogisticsLocation::find(this.PrimaryAddressLocation, _forupdate);
+
+        if (_throwExceptions && res.RecId == 0)
+        {
+            throw Error(strFmt(strLRTrim("@BowerySPS:ELogisticsLocationNotFound"), this.PrimaryAddressLocation));
+        }
+
+        return res;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>primaryPostalAddressAux</Name>
+				<Source><![CDATA[
+    /// <summary>
+    /// getting primaryPostalAddress
+    /// </summary>
+    /// <returns>LogisticsPostalAddress</returns>
+    public LogisticsPostalAddress primaryPostalAddressAux()
+    {
+        LogisticsPostalAddress postalAddress;
+
+        select Address from postalAddress
+            where postalAddress.Location == this.primaryAddressLogisticsLocationAux().RecId;
+
+        return postalAddress;
+    }
+
+]]></Source>
+			</Method>
+		</Methods>
+	</SourceCode>
+</AxClass>
