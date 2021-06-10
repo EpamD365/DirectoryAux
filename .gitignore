@@ -5,3 +5,4 @@
 /BuildProjectResult.log
 /BuildProjectResult.xml
 *.xref
+/Projects/DirectoryAux/obj/Debug/*.cache
